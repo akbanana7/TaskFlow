@@ -15,9 +15,7 @@ submitAddButton.addEventListener("click", handleSubmit)
 
 function handleSubmit(event) {
     event.preventDefault()
-    fetch(`http://localhost:8000/add/?user=${user}&timeStart=${timeStart.value}&timeEnd=${timeEnd.value}&timeZone=0&dateStart=${dateStart.value}&dateEnd=${dateEnd.value}`)
+    fetch(`http://localhost:8000/add/?user=${user}&taskName=${taskName.value}&taskDesc=${taskDesc.value}&timeStart=${timeStart.value}&timeEnd=${timeEnd.value}&timeZone=0&dateStart=${dateStart.value}&dateEnd=${dateEnd.value}`)
     console.log("Sent")
   }
 })
-
-

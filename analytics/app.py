@@ -7,6 +7,7 @@ import os
 from datetime import date, time
 
 # Database is on 5324
+# Database API is on 8000
 
 # All init
 app = FastAPI()
@@ -34,6 +35,8 @@ DROP TABLE IF EXISTS main
             cur.execute("""
 CREATE TABLE main (
 "user" varchar(255),
+"taskName" varchar(255),
+"taskDesc" text,
 timeStart time,
 timeEnd time,
 timezone int,
@@ -48,6 +51,8 @@ dateEnd date
 @app.get("/add/")  # For adding tasks
 async def addToDb(
     user: str = None,
+    taskName: str = None,
+    taskDesc: str = None,
     timeStart: str = None,
     timeEnd: str = None,
     timeZone: int = 0,
@@ -55,14 +60,18 @@ async def addToDb(
     dateEnd: str = None,
 ):
     if not user:
+        print("User not found")
         raise HTTPException(status_code=400, detail="User is required")
 
+    print(taskName, taskDesc, dateStart, dateEnd, timeStart, timeEnd)
+
     try:
-        parsed_time_start = time.fromisoformat(timeStart)
-        parsed_time_end = time.fromisoformat(timeEnd)
-        parsed_date_start = date.fromisoformat(dateStart)
-        parsed_date_end = date.fromisoformat(dateEnd)
-    except (TypeError, ValueError):
+        parsedTimeStart = time.fromisoformat(str(timeStart))
+        parsedTimeEnd = time.fromisoformat(str(timeEnd))
+        parsedDateStart = date.fromisoformat(str(dateStart))
+        parsedDateEnd = date.fromisoformat(str(dateEnd))
+    except (TypeError, ValueError) as e:
+        print(e)
         raise HTTPException(
             status_code=400,
             detail="Invalid time/date format",
@@ -72,10 +81,10 @@ async def addToDb(
         with conn.cursor() as cur:
             cur.execute(
                 """
-                INSERT INTO main ("user", timeStart, timeEnd, timezone, dateStart, dateEnd)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                INSERT INTO main ("user", "taskName", "taskDesc", timeStart, timeEnd, timezone, dateStart, dateEnd)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """,
-                (user, parsed_time_start, parsed_time_end, timeZone, parsed_date_start, parsed_date_end),
+                (user, taskName, taskDesc, parsedTimeStart, parsedTimeEnd, timeZone, parsedDateStart, parsedDateEnd),
             )
             conn.commit()
 
