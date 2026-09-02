@@ -91,5 +91,20 @@ async def addToDb(
     return {"message": "Task added successfully"}
 
 
+@app.get("/find/")
+async def findTask(
+    user: str = None,
+    taskName: str = None
+):
+    with psycopg.connect(f"dbname=TaskFlow user=postgres password={str(dbPass)}") as conn:
+        with conn.cursor() as cur:
+            cur.execute(f"""
+        SELECT * FROM main
+        WHERE "user" = '{user}' AND "taskName" = '{taskName}'
+""")
+            record = cur.fetchone()
+            print(record)
+    return {"message": f"{record}"}
+
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
