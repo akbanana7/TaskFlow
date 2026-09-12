@@ -91,20 +91,30 @@ async def addToDb(
     return {"message": "Task added successfully"}
 
 
-@app.get("/find/")
+@app.get("/find/") # CURRENT FORMAT FOR RETURN: USER, TASKNAME, TASK DESC, STRT TIME, END TIME, TIMEZONE, STRT DATE, END DATE
 async def findTask(
     user: str = None,
     taskName: str = None
 ):
-    with psycopg.connect(f"dbname=TaskFlow user=postgres password={str(dbPass)}") as conn:
-        with conn.cursor() as cur:
+    with psycopg.connect(f"dbname=TaskFlow user=postgres password={str(dbPass)}") as conn: # Connects to database
+        with conn.cursor() as cur: # Adds database cursor
             cur.execute(f"""
         SELECT * FROM main
         WHERE "user" = '{user}' AND "taskName" = '{taskName}'
-""")
-            record = cur.fetchone()
-            print(record)
-    return {"message": f"{record}"}
+""") # Executes query
+            record = cur.fetchone() # Fetches one record matching SQL query
+            arrRecord = []
+            for i in record: # Essentially converts tuple to array
+                arrRecord.append(i)
+            # Converting from time python objects to iso format 
+            arrRecord[3] =  time.isoformat(arrRecord[3])
+            arrRecord[4] = time.isoformat(arrRecord[4])
+            # Converting from date python objects to iso format
+            arrRecord[6] = date.isoformat(arrRecord[6])
+            arrRecord[7] = date.isoformat(arrRecord[7])
+            print(arrRecord[3])
+            print(arrRecord)
+    return {"record": f"{arrRecord}"}
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)

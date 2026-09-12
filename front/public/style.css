@@ -34,3 +34,8 @@ button {
     margin-left: 5%;
     margin-right: 5%;
 }
+
+#taskDetails {
+    align-items: center;
+    align-content: center;
+}
