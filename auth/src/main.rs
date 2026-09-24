@@ -1,6 +1,7 @@
 use axum::{ // Imports axum library
     routing::get,
-    Router
+    Router,
+    extract::Path
 };
 
 #[tokio::main()]
@@ -10,7 +11,11 @@ async fn main() {
     // Rust cannot infer that state from this route, so specify the default
     // unit state (`()`) explicitly.
     let app: Router<()> = Router::new()
-        .route("/", get(up));
+        .route("/", get(up))
+        .route("/add/{username}/{password}/{email}", get(add_user));
+
+    // 
+    println!("Listening on port: 8090");
 
     // This does something fancy to listen on a port
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8090").await.unwrap();
@@ -19,4 +24,12 @@ async fn main() {
 
 async fn up() -> &'static str{ // Essentially spits back "yup" in a http GET request when accessing initial url/ip
     "yup"
+}
+
+async fn add_user(Path((username, password, email)): Path<(String, String, String)>) -> &'static str { // Handles the username+password
+    println!("{}", username);
+    println!("{}", password);
+    println!("{}", email);
+
+    "Recieved sucessfully"
 }
