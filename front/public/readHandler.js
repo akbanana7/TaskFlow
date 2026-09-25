@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => { // Loads all required HTML elements from the page
     const user = "temp" // Replace when auth added
     const taskName = document.getElementById("taskSearch")
     const submitButton = document.getElementById("submitRead")
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!submitButton) return
 
 let array = []
-submitButton.addEventListener("click", handleSubmit)
+submitButton.addEventListener("click", handleSubmit) // When button, clicked do
 
 async function handleSubmit(event) {
     event.preventDefault()
@@ -26,15 +26,16 @@ async function handleSubmit(event) {
         console.log(rawRecord)
         console.log(rawRecord[0],rawRecord[1])
         console.log(typeof(rawRecord)) // Apparently is now a string. Sound
-        array = rawRecord.split(",")
+        array = rawRecord.split(",") // Turns recieved data into a JS array
         console.log(array)
         let index = 0
-        for (i in array) {
+        for (i in array) { // Essentially trim and format recieved data inside of the array
             array[index] = array[index].replace(/[\[\]']/g, "").trim()
             index++
         }
         console.log(array)
 
+        // Set the recieved data to the values of HTML DOM content
         taskReadName.textContent = array[1]
         taskReadDesc.textContent = array[2]
         taskReadDateStart.textContent = array[6]

@@ -26,7 +26,7 @@ async fn up() -> &'static str{ // Essentially spits back "yup" in a http GET req
     "yup"
 }
 
-async fn add_user(Path((username, password, email)): Path<(String, String, String)>) -> &'static str { // Handles the username+password
+async fn add_user(Path((username, password, email)): Path<(String, String, String)>) -> &'static str { // Handles the username+password+email
     println!("{}", username);
     println!("{}", password);
     println!("{}", email);
