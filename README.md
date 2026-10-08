@@ -9,17 +9,19 @@ This is a calander sort of app. It can take in tasks, along with dates and times
 I am developing this by myself to understand and learn various concepts and languages.
 Including:
 * Languages:
-    * Rust
     * Python
     * JavaScript
     * HTML/CSS
     * SQL
 * Frameworks/software:
     * Docker
+    * K8s
     * Node.js
     * PostgreSQL
 * Microservice-based architechture
 * Containerisation/deployment
+* Self hosted authentication
+* App security and redundancy
 
 ## What stage is this at?
 

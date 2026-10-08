@@ -7,8 +7,9 @@ import os
 from datetime import date, time
 
 # Database is on 5324
-# Database API is on 8000
+# Front API is on 8080
 # Auth API is on 8090
+# This is on 8000
 
 # All init
 app = FastAPI()
