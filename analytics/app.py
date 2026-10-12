@@ -5,6 +5,8 @@ import psycopg
 from dotenv import load_dotenv
 import os
 from datetime import date, time
+import json
+from pydantic import BaseModel
 
 # Database is on 5324
 # Front API is on 8080
@@ -26,18 +28,6 @@ app.add_middleware(
 )
 
 
-""" USE THIS AT THE START OF API CALLS TO MAKE AN EASIER TASK CLASS
-class task: # Creates the class of task to simplify and make code more readable
-    def __init__(self, user, name, desc, timeStart, timeEnd, timeZone, dateStart, dateEnd):
-        self.user = user
-        self.name = name
-        self.desc = desc
-        self.timeStart = timeStart
-        self.timeEnd = timeEnd
-        self.timeZone = timeZone
-        self.dateStart = dateStart
-        self.dateEnd = dateEnd
-"""
 
 @app.get("/init/")  # For init database
 async def initDb(passWord: str = None):
@@ -62,31 +52,31 @@ dateEnd date
             conn.commit()
     return {"message": "Database init attempted"}
 
+class task(BaseModel): # Creates the class of task to simplify and make code more readable
+    user: str
+    taskName: str
+    taskDesc: str
+    dateStart: date
+    dateEnd: date
+    timeStart: time
+    timeEnd: time
+
  # For adding tasks
 
-@app.get("/add/") # Call in format of: 127.0.0.1:8000/add/?user&taskName&taskDesc&timeStart&timeEnd&timeZone&dateStart&dateEnd
-async def addToDb(
-    user: str = None,
-    taskName: str = None,
-    taskDesc: str = None,
-    timeStart: str = None,
-    timeEnd: str = None,
-    timeZone: int = 0,
-    dateStart: str = None,
-    dateEnd: str = None,
-):
+@app.post("/add/", status_code=201) # Call in as POST request with JSON payload
+async def addToDb(payload: task):
 
+    # CBA to recode the function below so just ignore this block
+    user = payload.user
+    taskName = payload.taskName
+    taskDesc = payload.taskDesc
+    dateStart = payload.dateStart
+    dateEnd = payload.dateEnd
+    timeStart = payload.timeStart
+    timeEnd = payload.timeEnd
+    # End of ignore
 
-    class task: # Creates the class of task to simplify and make code more readable
-        def __init__(self, user, name, desc, timeStart, timeEnd, timeZone, dateStart, dateEnd):
-            self.user = user
-            self.name = name
-            self.desc = desc
-            self.timeStart = timeStart
-            self.timeEnd = timeEnd
-            self.timeZone = timeZone
-            self.dateStart = dateStart
-            self.dateEnd = dateEnd
+    timeZone = "0" # -- DEFAULT: 0 == UTC time. Change when actual ability is added in
     if not user:
         print("User not found")
         raise HTTPException(status_code=400, detail="User is required")
@@ -94,12 +84,11 @@ async def addToDb(
     print(taskName, taskDesc, dateStart, dateEnd, timeStart, timeEnd)
 
     # Create task class
-    task = task(user, taskName, taskDesc, timeStart, timeEnd, timeZone, dateStart, dateEnd)
     try:
-        parsedTimeStart = time.fromisoformat(str(task.timeStart))
-        parsedTimeEnd = time.fromisoformat(str(task.timeEnd))
-        parsedDateStart = date.fromisoformat(str(task.dateStart))
-        parsedDateEnd = date.fromisoformat(str(task.dateEnd))
+        parsedTimeStart = time.fromisoformat(str(timeStart))
+        parsedTimeEnd = time.fromisoformat(str(timeEnd))
+        parsedDateStart = date.fromisoformat(str(dateStart))
+        parsedDateEnd = date.fromisoformat(str(dateEnd))
     except (TypeError, ValueError) as e:
         print(e)
         raise HTTPException(
@@ -114,7 +103,7 @@ async def addToDb(
                 INSERT INTO main ("user", "taskName", "taskDesc", timeStart, timeEnd, timezone, dateStart, dateEnd)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """,
-                (task.user, task.name, task.desc, parsedTimeStart, parsedTimeEnd, task.timeZone, parsedDateStart, parsedDateEnd),
+                (user, taskName, taskDesc, parsedTimeStart, parsedTimeEnd, timeZone, parsedDateStart, parsedDateEnd),
             )
             conn.commit()
 
