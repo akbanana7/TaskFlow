@@ -4,6 +4,6 @@ COPY / /
 
 RUN npm install
 
-EXPOSE 8080 80 8000 3000
+EXPOSE 8080 
 
 CMD node server.js

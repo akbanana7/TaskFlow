@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import psycopg
+from psycopg import sql
 from dotenv import load_dotenv
 import os
 from datetime import date, time
@@ -17,6 +18,36 @@ from pydantic import BaseModel
 app = FastAPI()
 load_dotenv()
 dbPass = os.getenv("DB_PASS")
+dbHost = os.getenv("PGHOST") or "localhost"
+dbName = "TaskFlow"
+
+
+def getDbConnection(): # Big handler to handle connecting, and internal schema handling, of database
+    connectionOptions = {
+        "user": "postgres",
+        "password": str(dbPass),
+        "host": dbHost,
+    }
+    try:
+        return psycopg.connect(dbname=dbName, **connectionOptions)
+    except psycopg.OperationalError as exc:
+        # Some psycopg/server combinations report a missing database as an
+        # OperationalError rather than the InvalidCatalogName subclass.
+        if exc.sqlstate != "3D000":
+            raise
+
+    # Create the configured database if this PostgreSQL server has not initialized it.
+    with psycopg.connect(
+        dbname="postgres", autocommit=True, **connectionOptions
+    ) as conn:
+        try:
+            conn.execute(
+                sql.SQL("CREATE DATABASE {}").format(sql.Identifier(dbName))
+            )
+        except psycopg.errors.DuplicateDatabase:
+            pass
+
+    return psycopg.connect(dbname=dbName, **connectionOptions)
 
 app.add_middleware(
     CORSMiddleware,
@@ -31,7 +62,7 @@ app.add_middleware(
 
 @app.get("/init/")  # For init database
 async def initDb(passWord: str = None):
-    with psycopg.connect(f"dbname=TaskFlow user=postgres password={str(dbPass)}") as conn:
+    with getDbConnection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
 DROP TABLE IF EXISTS main
@@ -96,7 +127,7 @@ async def addToDb(payload: task):
             detail="Invalid time/date format",
         )
 
-    with psycopg.connect(f"dbname=TaskFlow user=postgres password={str(dbPass)}") as conn:
+    with getDbConnection() as conn:
         with conn.cursor() as cur:
             cur.execute(
                 """
@@ -116,7 +147,7 @@ async def findTask(
     user: str = None,
     taskName: str = None
 ):
-    with psycopg.connect(f"dbname=TaskFlow user=postgres password={str(dbPass)}") as conn: # Connects to database
+    with getDbConnection() as conn: # Connects to database
         with conn.cursor() as cur: # Adds database cursor
             cur.execute(f"""
         SELECT * FROM main
@@ -137,4 +168,4 @@ async def findTask(
     return {"record": f"{arrRecord}"}
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)

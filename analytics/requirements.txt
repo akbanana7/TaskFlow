@@ -1,0 +1,6 @@
+uvicorn
+fastapi
+psycopg[binary]
+dotenv
+pydantic
+datetime

@@ -1,0 +1,37 @@
+services:
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+
+  backendpy:
+    build:
+      context: ./analytics
+      dockerfile: Dockerfile
+    environment:
+      DB_PASS: main123
+      PGHOST: database
+    ports:
+      - 8000:8000
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: "TaskFlow"
+      POSTGRES_PASSWORD: main123
+    volumes:
+      - ./prod/db:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+

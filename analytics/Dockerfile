@@ -1,11 +1,8 @@
-FROM python:3.14
+FROM python:3.14-slim
 
 COPY / /
 
-RUN pip install uvicorn & pip install fastapi
-RUN pip install psycopg 
-RUN pip install dotenv
-RUN pip install datetime
+RUN pip install -r requirements.txt
 
 EXPOSE 8000
 
