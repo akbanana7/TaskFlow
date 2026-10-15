@@ -27,7 +27,7 @@ function handleSubmit(event) {
       "timeEnd": timeEnd
     }
 
-    fetch("http://localhost:8000/api/add/", { // -- CHANGE TO ACTUAL URL WHEN HOSTING IN PROD
+    fetch("http://127.0.0.1:8000/api/add/", { // -- CHANGE TO ACTUAL URL WHEN HOSTING IN PROD
       method: "POST", // Post API call
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(toJson) // Send JSON
