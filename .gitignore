@@ -1,0 +1,8 @@
+front/node_modules/
+.env
+analytics/__pycache__
+authRunFolder/
+.venv/
+secrets/
+prod/
+postgres_password.txt

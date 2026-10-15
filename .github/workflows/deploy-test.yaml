@@ -1,0 +1,44 @@
+name: Docker Deploy Test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+     - name: Checkout
+       uses: actions/checkout@v4
+      
+     - name: Validate docker config
+       uses: docker compose config -q
+    
+     - name: Build docker
+       uses: docker compose build --no-cache
+
+     - name: Run docker
+       uses: docker compose up
+
+     - name: Wait for app health
+       run: |
+          for i in {1..30}; do
+            status=$(docker inspect \
+              --format='{{.State.Health.Status}}' \
+              "$(docker compose ps -q app)" 2>/dev/null || true)
+
+            if [ "$status" = "healthy" ]; then
+              exit 0
+            fi
+
+            sleep 2
+          done
+
+          docker compose ps -a
+          docker compose logs
+          exit 1
+     - name: Cleanup
+       uses: docker compose down -v

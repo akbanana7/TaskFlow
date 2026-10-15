@@ -22,27 +22,36 @@ async function handleSubmit(event) {
     if (response.ok) {
         const data = await response.json()
         console.log(data)
-        const rawRecord = data.record // Turns it from the http response BS to a "tuple"
-        console.log(rawRecord)
-        console.log(rawRecord[0],rawRecord[1])
-        console.log(typeof(rawRecord)) // Apparently is now a string. Sound
-        array = rawRecord.split(",") // Turns recieved data into a JS array
-        console.log(array)
-        let index = 0
-        for (i in array) { // Essentially trim and format recieved data inside of the array
-            array[index] = array[index].replace(/[\[\]']/g, "").trim()
-            index++
+        const record = data.body // Turns it from the http response BS to a tuple
+        const finArr = [] // Needed to essentially create a big array to actively and easily chuck stuff out
+
+        for (i in record) {
+            console.log(rawRecord)
+            console.log(rawRecord[0],rawRecord[1])
+            console.log(typeof(rawRecord)) // Apparently is now a string. Sound
+            array = rawRecord.split(",") // Turns recieved data into a JS array
+            console.log(array)
+            let index = 0
+            for (i in array) { // Essentially trim and format recieved data inside of the array
+                array[index] = array[index].replace(/[\[\]']/g, "").trim()
+                index++
+            }
+            console.log(array)
+            finArr.push(array)
         }
-        console.log(array)
-
+        
+        console.log(finArr)
+        // FINISH TAKING FROM ARR TO FRONTEND
         // Set the recieved data to the values of HTML DOM content
-        taskReadName.textContent = array[1]
-        taskReadDesc.textContent = array[2]
-        taskReadDateStart.textContent = array[6]
-        taskReadDateEnd.textContent = array[7]
-        taskReadTimeStart.textContent = array[3]
-        taskReadTimeEnd.textContent = array[4]
 
+        for (i in finArr){
+            taskReadName.textContent = i[1]
+            taskReadDesc.textContent = i[2]
+            taskReadDateStart.textContent = i[6]
+            taskReadDateEnd.textContent = i[7]
+            taskReadTimeStart.textContent = i[3]
+            taskReadTimeEnd.textContent = i[4]
+        }
     }
 }
 })

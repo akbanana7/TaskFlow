@@ -153,19 +153,23 @@ async def findTask(
         SELECT * FROM main
         WHERE "user" = '{user}' AND "taskName" = '{taskName}'
 """) # Executes query
-            record = cur.fetchone() # Fetches one record matching SQL query
+            record = cur.fetchall() # Fetches one record matching SQL query
             arrRecord = []
-            for i in record: # Essentially converts tuple to array
-                arrRecord.append(i)
-            # Converting from time python objects to iso format 
-            arrRecord[3] =  time.isoformat(arrRecord[3])
-            arrRecord[4] = time.isoformat(arrRecord[4])
-            # Converting from date python objects to iso format
-            arrRecord[6] = date.isoformat(arrRecord[6])
-            arrRecord[7] = date.isoformat(arrRecord[7])
-            print(arrRecord[3])
-            print(arrRecord)
-    return {"record": f"{arrRecord}"}
+            print(record) # DEBUG LINE
+            for user, taskName, taskDesc, timeStart, timeEnd, timezone, dateStart, dateEnd in record:
+                print((user, taskName, taskDesc, timeStart, timeEnd, timezone, dateStart, dateEnd))
+                arrRecord.append((
+                    user,
+                    taskName,
+                    taskDesc,
+                    time.isoformat(timeStart),
+                    time.isoformat(timeEnd),
+                    timezone,
+                    date.isoformat(dateStart),
+                    date.isoformat(dateEnd),
+                ))
+
+    return {"body": arrRecord}
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
