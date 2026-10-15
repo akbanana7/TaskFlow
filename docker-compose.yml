@@ -18,8 +18,11 @@ services:
     environment:
       DB_PASS: main123
       PGHOST: database
-    ports:
-      - 8000:8000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backendpy.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.backendpy.entrypoints=web"
+      - "traefik.http.services.backendpy.loadbalancer.server.port=8000"
     depends_on:
       database:
         condition: service_healthy
