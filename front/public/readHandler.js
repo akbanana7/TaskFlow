@@ -18,7 +18,7 @@ submitButton.addEventListener("click", handleSubmit) // When button, clicked do
 
 async function handleSubmit(event) {
     event.preventDefault()
-    const response = await fetch(`http://127.0.0.1:8000/api/find/?user=${user}&taskName=${taskName.value}`)
+    const response = await fetch(`${window.location.origin}/api/find/?user=${encodeURIComponent(user)}&taskName=${encodeURIComponent(taskName.value)}`)
     if (response.ok) {
         const data = await response.json()
         console.log(data)

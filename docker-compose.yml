@@ -57,3 +57,7 @@ services:
 
 volumes:
   postgres_data:
+
+# For remote clients, use http://<server-public-ip-or-domain>:8000/api/... (or port 80),
+# not 127.0.0.1:8000, which points to the client's own machine. The existing 8000:80
+# mapping already publishes Traefik; allow inbound TCP 8000 (or 80) in host/cloud firewalls.
