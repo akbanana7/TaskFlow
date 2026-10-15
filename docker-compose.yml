@@ -18,6 +18,8 @@ services:
     environment:
       DB_PASS: main123
       PGHOST: database
+    ports:
+      - 8000:8000
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backendpy.rule=PathPrefix(`/api`)"
