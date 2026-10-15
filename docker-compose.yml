@@ -24,6 +24,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.backendpy.rule=PathPrefix(`/api`)"
       - "traefik.http.routers.backendpy.entrypoints=web"
+      - "traefik.http.routers.backendpy.middlewares=backendpy-strip-api"
+      - "traefik.http.middlewares.backendpy-strip-api.stripprefix.prefixes=/api"
       - "traefik.http.services.backendpy.loadbalancer.server.port=8000"
     depends_on:
       database:
