@@ -60,7 +60,7 @@ app.add_middleware(
 
 
 
-@app.get("/api/init/")  # For init database
+@app.get("/init/")  # For init database
 async def initDb(passWord: str = None):
     with getDbConnection() as conn:
         with conn.cursor() as cur:
@@ -94,7 +94,7 @@ class task(BaseModel): # Creates the class of task to simplify and make code mor
 
  # For adding tasks
 
-@app.post("/api/add/", status_code=201) # Call in as POST request with JSON payload
+@app.post("/add/", status_code=201) # Call in as POST request with JSON payload
 async def addToDb(payload: task):
 
     # CBA to recode the function below so just ignore this block
@@ -142,7 +142,7 @@ async def addToDb(payload: task):
 
 
 # This can stay without OOP
-@app.get("/api/find/") # CURRENT FORMAT FOR RETURN: USER, TASKNAME, TASK DESC, STRT TIME, END TIME, TIMEZONE, STRT DATE, END DATE
+@app.get("/find/") # CURRENT FORMAT FOR RETURN: USER, TASKNAME, TASK DESC, STRT TIME, END TIME, TIMEZONE, STRT DATE, END DATE
 async def findTask(
     user: str = None,
     taskName: str = None
