@@ -23,12 +23,12 @@ jobs:
      - name: Run docker
        run: docker compose up -d
 
-     - name: Wait for app health
+     - name: Wait for database health
        run: |
           for i in {1..30}; do
             status=$(docker inspect \
               --format='{{.State.Health.Status}}' \
-              "$(docker compose ps -q app)" 2>/dev/null || true)
+              "$(docker compose ps -q database)" 2>/dev/null || true)
 
             if [ "$status" = "healthy" ]; then
               exit 0
