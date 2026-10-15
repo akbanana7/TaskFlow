@@ -45,7 +45,7 @@ services:
       - "--entrypoints.web.address=:80"
     ports:
       - 80:80
-      - 8015:8080
+      - 127.0.0.1:8015:8080
     volumes:
       - //var/run/docker.sock:/var/run/docker.sock:ro
 
