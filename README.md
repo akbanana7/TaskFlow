@@ -28,3 +28,7 @@ Including:
 This project is currently in its **VERY** early stages of development. There is some basic proof of concept code down, but nothing that really all works yet.
 
 When I get to a stage where everything does work together, and I believe enough has been put in, i'll compile and put out an initial release.
+
+## Cool Stuff
+
+[![Deploy Test Status](https://github.com/akbanana7/TaskFlow/actions/workflows/deploy-test.yaml/badge.svg?branch=main&event=push)](https://github.com/akbanana7/TaskFlow/actions/workflows/deploy-test.yaml?query=branch%3Amain)
