@@ -33,9 +33,14 @@ button {
     text-align: center;
     margin-left: 5%;
     margin-right: 5%;
+    border-radius: 15px;
 }
 
 #taskDetails {
     align-items: center;
     align-content: center;
+}
+
+#taskDetails div {
+    background-color: #3D4756;
 }

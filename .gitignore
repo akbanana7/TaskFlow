@@ -6,3 +6,4 @@ authRunFolder/
 secrets/
 prod/
 postgres_password.txt
+k8s/

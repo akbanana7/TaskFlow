@@ -171,5 +171,46 @@ async def findTask(
 
     return {"body": arrRecord}
 
+
+@app.get("/update")
+async def updateTask(payload: task):
+    if user != None:
+
+        # This block essentially makes variable calls/reassignment easier to write
+        user = payload.user
+        taskName = payload.taskName
+        taskDesc = payload.taskDesc
+        dateStart = payload.dateStart
+        dateEnd = payload.dateEnd
+        timeStart = payload.timeStart
+        timeEnd = payload.timeEnd
+
+        # Parse time formats
+        try:
+            parsedTimeStart = time.fromisoformat(str(timeStart))
+            parsedTimeEnd = time.fromisoformat(str(timeEnd))
+            parsedDateStart = date.fromisoformat(str(dateStart))
+            parsedDateEnd = date.fromisoformat(str(dateEnd))
+        except (TypeError, ValueError) as e:
+            print(e)
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid time/date format",
+            )
+
+        with getDbConnection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                UPDATE main
+                SET user=%s, taskName=%s, taskDesc=%s, timeStart=%s, timeEnd=%s, timezone=%s, dateStart=%s, dateEnd=%s
+""") % (user,taskName,taskDesc,parsedTimeStart,parsedTimeEnd,0,parsedDateStart,parsedDateEnd)
+            return {"message": "Updated task successfully"}
+    else: # If user doesn't exist
+        raise HTTPException( 
+            status_code=401,
+            detail="User not authenticated"
+        )
+
 if __name__ == "__main__":
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
