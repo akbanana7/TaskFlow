@@ -204,7 +204,7 @@ async def updateTask(payload: task):
                     """
                 UPDATE main
                 SET user=%s, taskName=%s, taskDesc=%s, timeStart=%s, timeEnd=%s, timezone=%s, dateStart=%s, dateEnd=%s
-""") % (user,taskName,taskDesc,parsedTimeStart,parsedTimeEnd,0,parsedDateStart,parsedDateEnd)
+                """) % (user,taskName,taskDesc,parsedTimeStart,parsedTimeEnd,0,parsedDateStart,parsedDateEnd)
             return {"message": "Updated task successfully"}
     else: # If user doesn't exist
         raise HTTPException( 
