@@ -19,11 +19,27 @@ button {
     margin-bottom: 2%;
 }
 
+.container {
+    display: flex
+}
+
+
+
 #taskAdd {
     background-color: #3D4756;
     border-radius: 15px;
     margin-left: 2%;
     margin-right: 2%;
+    width: 50%;
+}
+
+#taskRead {
+    background-color: #3D4756;
+    border-radius: 15px;
+    margin-left: 2%;
+    margin-right: 2%;
+    align-items: center;
+    width: 50%;
 }
 
 #formContents {
